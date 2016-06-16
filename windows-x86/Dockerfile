@@ -54,7 +54,9 @@ RUN git clone https://github.com/mxe/mxe.git && \
   git checkout 4accc990de7741f4d5aa37e368a732f3d47d803a
 WORKDIR /usr/src/mxe
 COPY settings.mk /usr/src/mxe/
-RUN make -j$(nproc)
+COPY disable-sjlj-exceptions.patch disable-sjlj-exceptions.patch
+RUN patch -p1 -i disable-sjlj-exceptions.patch \
+ && make -j$(nproc)
 
 ENV PATH ${PATH}:/usr/src/mxe/usr/bin
 ENV CMAKE_TOOLCHAIN_FILE /usr/src/mxe/usr/i686-w64-mingw32.static/share/cmake/mxe-conf.cmake

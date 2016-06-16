@@ -1,0 +1,12 @@
+diff --git a/src/gcc.mk b/src/gcc.mk
+index 4a48e8d..fadd644 100644
+--- a/src/gcc.mk
++++ b/src/gcc.mk
+@@ -35,6 +35,7 @@ define $(PKG)_CONFIGURE
+         --with-gnu-as \
+         --disable-nls \
+         $(if $(BUILD_STATIC),--disable-shared) \
++				--disable-sjlj-exceptions \
+         --disable-multilib \
+         --without-x \
+         --disable-win32-registry \
