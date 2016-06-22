@@ -1,7 +1,20 @@
 diff --git a/src/gcc.mk b/src/gcc.mk
-index 4a48e8d..fadd644 100644
+index 4a48e8d..ae388d6 100644
 --- a/src/gcc.mk
 +++ b/src/gcc.mk
+@@ -2,9 +2,9 @@
+ # See index.html for further information.
+ 
+ PKG             := gcc
+-$(PKG)_IGNORE   := 5%
+-$(PKG)_VERSION  := 4.9.3
+-$(PKG)_CHECKSUM := 2332b2a5a321b57508b9031354a8503af6fdfb868b8c1748d33028d100a8b67e
++$(PKG)_IGNORE   := 6%
++$(PKG)_VERSION  := 5.2.0
++$(PKG)_CHECKSUM := 5f835b04b5f7dd4f4d2dc96190ec1621b8d89f2dc6f638f9f8bc1b1014ba8cad
+ $(PKG)_SUBDIR   := gcc-$($(PKG)_VERSION)
+ $(PKG)_FILE     := gcc-$($(PKG)_VERSION).tar.bz2
+ $(PKG)_URL      := http://ftp.gnu.org/pub/gnu/gcc/gcc-$($(PKG)_VERSION)/$($(PKG)_FILE)
 @@ -35,6 +35,7 @@ define $(PKG)_CONFIGURE
          --with-gnu-as \
          --disable-nls \
@@ -10,3 +23,12 @@ index 4a48e8d..fadd644 100644
          --disable-multilib \
          --without-x \
          --disable-win32-registry \
+@@ -48,6 +49,8 @@ define $(PKG)_CONFIGURE
+         --with-as='$(PREFIX)/bin/$(TARGET)-as' \
+         --with-ld='$(PREFIX)/bin/$(TARGET)-ld' \
+         --with-nm='$(PREFIX)/bin/$(TARGET)-nm' \
++				--enable-linker-build-id \
++				--with-default-libstdcxx-abi=gcc4-compatible \
+         $(shell [ `uname -s` == Darwin ] && echo "LDFLAGS='-Wl,-no_pie'")
+ endef
+ 
