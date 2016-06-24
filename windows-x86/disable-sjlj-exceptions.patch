@@ -1,5 +1,19 @@
+diff --git a/Makefile b/Makefile
+index cd45f8c..36aa997 100644
+--- a/Makefile
++++ b/Makefile
+@@ -83,8 +83,7 @@ MXE_CONFIGURE_OPTS = \
+         --disable-static --enable-shared ) \
+     $(MXE_DISABLE_DOC_OPTS)
+ 
+-MXE_GCC_THREADS = \
+-    $(if $(findstring posix,$(TARGET)),posix,win32)
++MXE_GCC_THREADS = posix
+ 
+ # Append these to the "make" and "make install" steps of autotools packages
+ # in order to neither build nor install unwanted binaries, manpages,
 diff --git a/src/gcc.mk b/src/gcc.mk
-index 4a48e8d..ae388d6 100644
+index 4a48e8d..c697aab 100644
 --- a/src/gcc.mk
 +++ b/src/gcc.mk
 @@ -2,9 +2,9 @@
@@ -15,20 +29,44 @@ index 4a48e8d..ae388d6 100644
  $(PKG)_SUBDIR   := gcc-$($(PKG)_VERSION)
  $(PKG)_FILE     := gcc-$($(PKG)_VERSION).tar.bz2
  $(PKG)_URL      := http://ftp.gnu.org/pub/gnu/gcc/gcc-$($(PKG)_VERSION)/$($(PKG)_FILE)
-@@ -35,6 +35,7 @@ define $(PKG)_CONFIGURE
+@@ -28,18 +28,30 @@ define $(PKG)_CONFIGURE
+         --build='$(BUILD)' \
+         --prefix='$(PREFIX)' \
+         --libdir='$(PREFIX)/lib' \
+-        --enable-languages='c,c++,objc,fortran' \
++        --enable-languages='c,c++,objc,fortran,lto' \
+         --enable-version-specific-runtime-libs \
+         --with-gcc \
+         --with-gnu-ld \
          --with-gnu-as \
          --disable-nls \
          $(if $(BUILD_STATIC),--disable-shared) \
 +				--disable-sjlj-exceptions \
++        --with-dwarf2 \
++		    --enable-checking=release \
++				--disable-rpath \
++				--disable-nls \
          --disable-multilib \
          --without-x \
++        --enable-graphite \
++        --enable-libatomic \
++				--enable-lto \
          --disable-win32-registry \
-@@ -48,6 +49,8 @@ define $(PKG)_CONFIGURE
+-        --enable-threads=$(MXE_GCC_THREADS) \
++				--enable-fully-dynamic-string \
++				--enable-libstdcxx-time=yes \
++				--disable-libstdcxx-pch \
++				--disable-libstdcxx-debug \
+         --enable-libgomp \
++        --enable-threads=$(MXE_GCC_THREADS) \
+         --with-gmp='$(PREFIX)/$(BUILD)' \
+         --with-isl='$(PREFIX)/$(BUILD)' \
+         --with-mpc='$(PREFIX)/$(BUILD)' \
+@@ -48,6 +60,7 @@ define $(PKG)_CONFIGURE
          --with-as='$(PREFIX)/bin/$(TARGET)-as' \
          --with-ld='$(PREFIX)/bin/$(TARGET)-ld' \
          --with-nm='$(PREFIX)/bin/$(TARGET)-nm' \
 +				--enable-linker-build-id \
-+				--with-default-libstdcxx-abi=gcc4-compatible \
          $(shell [ `uname -s` == Darwin ] && echo "LDFLAGS='-Wl,-no_pie'")
  endef
  
