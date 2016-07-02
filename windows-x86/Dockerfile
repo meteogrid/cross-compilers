@@ -54,19 +54,11 @@ RUN git clone https://github.com/mxe/mxe.git && \
   git checkout 4accc990de7741f4d5aa37e368a732f3d47d803a
 WORKDIR /usr/src/mxe
 COPY settings.mk /usr/src/mxe/
-COPY disable-sjlj-exceptions.patch disable-sjlj-exceptions.patch
-RUN patch -p1 -i disable-sjlj-exceptions.patch \
- && make -j$(nproc)
+RUN make -j$(nproc)
 
+ENV CROSS_TRIPLE i686-w64-mingw32.static.posix
 ENV PATH ${PATH}:/usr/src/mxe/usr/bin
-ENV CMAKE_TOOLCHAIN_FILE /usr/src/mxe/usr/i686-w64-mingw32.static/share/cmake/mxe-conf.cmake
+ENV CMAKE_TOOLCHAIN_FILE /usr/src/mxe/usr/${CROSS_TRIPLE}/share/cmake/mxe-conf.cmake
 RUN echo 'set(CMAKE_CROSSCOMPILING_EMULATOR "/usr/bin/wine")' >> ${CMAKE_TOOLCHAIN_FILE}
-ENV CROSS_TRIPLE i686-w64-mingw32.static
-ENV AS=/usr/src/mxe/usr/bin/${CROSS_TRIPLE}-as \
-    AR=/usr/src/mxe/usr/bin/${CROSS_TRIPLE}-ar \
-    CC=/usr/src/mxe/usr/bin/${CROSS_TRIPLE}-gcc \
-    CPP=/usr/src/mxe/usr/bin/${CROSS_TRIPLE}-cpp \
-    CXX=/usr/src/mxe/usr/bin/${CROSS_TRIPLE}-g++ \
-    LD=/usr/src/mxe/usr/bin/${CROSS_TRIPLE}-ld
 
 WORKDIR /usr/src
